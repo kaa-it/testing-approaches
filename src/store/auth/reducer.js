@@ -1,6 +1,6 @@
 import { ActionTypes } from "./actions";
 
-const initialState = {
+export const initialState = {
   data: null,
   authChecking: true,
   registerSending: false,
