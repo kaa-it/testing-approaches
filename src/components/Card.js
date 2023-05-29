@@ -14,7 +14,7 @@ function Card({ card, onImageClick, onDelete }) {
   }
 
   const isLiked = card.likes.some((i) => i._id === currentUser._id);
-  const cardLikeButtonClassName = `card__like-button ${
+  const cardLikeButtonClassName = ` card__like-button ${
     isLiked && "card__like-button_is-active"
   }`;
 
@@ -32,26 +32,26 @@ function Card({ card, onImageClick, onDelete }) {
   }
 
   return (
-    <li className='places__item card'>
+    <li className="places__item card">
       <div
-        className='card__image'
+        className="card__image"
         style={{ backgroundImage: `url(${card.link})` }}
         onClick={handleImageClick}
       ></div>
       <button
-        type='button'
+        type="button"
         className={cardDeleteButtonClassName}
         onClick={handleDeleteClick}
       ></button>
-      <div className='card__description'>
-        <h2 className='card__title'>{card.name}</h2>
-        <div className='card__likes'>
+      <div className="card__description">
+        <h2 className="card__title">{card.name}</h2>
+        <div className="card__likes">
           <button
-            type='button'
+            type="button"
             className={cardLikeButtonClassName}
             onClick={handleLikeClick}
           ></button>
-          <p className='card__like-count'>{card.likes.length}</p>
+          <p className="card__like-count">{card.likes.length}</p>
         </div>
       </div>
     </li>
