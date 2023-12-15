@@ -1,6 +1,6 @@
 import { ActionTypes } from "./actions";
 
-const initialState = {
+export const initialState = {
   data: null,
   authChecking: true,
   registerSending: false,
@@ -15,7 +15,7 @@ const reducer = (state = initialState, action) => {
       return { ...state, data: action.payload };
     case ActionTypes.SET_AUTH_CHECKING:
       return { ...state, authChecking: action.payload };
-    case ActionTypes.SET_REGESTER_SENDING:
+    case ActionTypes.SET_REGISTER_SENDING:
       return { ...state, registerSending: action.payload };
     case ActionTypes.SET_REGISTER_SEND_ERROR:
       return { ...state, registerError: action.payload };

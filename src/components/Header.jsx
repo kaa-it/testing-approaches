@@ -32,7 +32,7 @@ function Header() {
       />
       </Link>
       <Routes>
-        <Route path='/gallery/' element={
+        <Route path='/gallery' element={
           <>
             <button
               className='header__burger'
@@ -40,7 +40,7 @@ function Header() {
               aria-label='меню'
               onClick={toggleMenu}
             ></button>
-            <div className='header__wrapper'>
+            <div className='header__wrapper' data-testid='header-wrapper-element'>
               <p className='header__user'>{email}</p>
               <button className='header__logout' onClick={handleSignOut}>
                 Выйти
@@ -49,12 +49,12 @@ function Header() {
           </>
         } />
         <Route path='/signup' element={
-          <Link className='header__auth-link' to='/signin'>
+          <Link className='header__auth-link' to='/signin' data-testid='link-signup-element'>
             Войти
           </Link>
         } />
         <Route path='/signin' element={
-          <Link className='header__auth-link' to='/signup'>
+          <Link className='header__auth-link' to='/signup' data-testid='link-signin-element'>
             Регистрация
           </Link>
         } />
