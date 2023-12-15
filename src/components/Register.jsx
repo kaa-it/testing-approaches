@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from 'prop-types';
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { register } from "../store/auth/actions";
 import { getRegisterSending } from "../store/auth/selectors";
@@ -8,7 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 import useForm from "../hooks/useForm";
 
 function Register({ setTooltip }) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { isSenging } = useSelector(getRegisterSending);
   const { values, handleChange } = useForm();
@@ -17,7 +17,7 @@ function Register({ setTooltip }) {
     evt.preventDefault();
     dispatch(register(values))
       .then(() => {
-        history.push("/signin");
+        navigate("/signin");
         setTooltip({
           text: "Вы успешно зарегистрировались",
           iconType: "success",

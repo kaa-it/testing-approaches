@@ -1,11 +1,10 @@
 import React from "react";
 import PropTypes from 'prop-types';
-import Popup from "./Popup.js";
+import Popup from "./Popup";
 
 function PopupWithForm({
   title,
   name,
-  isOpen,
   onClose,
   children,
   onSubmit,
@@ -13,7 +12,7 @@ function PopupWithForm({
   isDisabled = false,
 }) {
   return (
-    <Popup isOpen={isOpen} onClose={onClose}>
+    <Popup onClose={onClose}>
       <form className='popup__form' name={name} noValidate onSubmit={onSubmit}>
         <button
           type='button'
@@ -39,7 +38,6 @@ function PopupWithForm({
 PopupWithForm.propTypes = {
   title: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   children: PropTypes.node,
   onSubmit: PropTypes.func.isRequired,

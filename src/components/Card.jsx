@@ -1,17 +1,16 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Link, useLocation } from "react-router-dom";
 import { cardPropTypes } from "../utils/prop-types";
 import { useSelector, useDispatch } from "react-redux";
 import { getCurrentUser } from "../store/current-user/selectors";
 import { changeLikeCardStatus } from "../store/cards/actions";
 
-function Card({ card, onImageClick, onDelete }) {
+function Card({ card, onDelete }) {
+  const location = useLocation();
+
   const dispatch = useDispatch();
   const currentUser = useSelector(getCurrentUser);
-
-  function handleImageClick() {
-    onImageClick(card);
-  }
 
   const isLiked = card.likes.some((i) => i._id === currentUser._id);
   const cardLikeButtonClassName = `card__like-button ${
@@ -33,11 +32,12 @@ function Card({ card, onImageClick, onDelete }) {
 
   return (
     <li className='places__item card'>
-      <div
+      <Link
         className='card__image'
         style={{ backgroundImage: `url(${card.link})` }}
-        onClick={handleImageClick}
-      ></div>
+        to={`/card/${card._id}`}
+        state={{ background: location}}
+      ></Link>
       <button
         type='button'
         className={cardDeleteButtonClassName}
@@ -60,7 +60,6 @@ function Card({ card, onImageClick, onDelete }) {
 
 Card.propTypes = {
   card: cardPropTypes,
-  onImageClick: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
 };
 

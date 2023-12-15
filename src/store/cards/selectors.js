@@ -6,3 +6,5 @@ export const getCardsLoadError = (store) => store[name].loadError;
 
 export const getIsCardSending = (store) => store[name].isSending;
 export const getCardSendError = (store) => store[name].sendError;
+
+export const getCardById = (store, id) => store[name].data.find(item => item._id === id);

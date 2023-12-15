@@ -1,9 +1,11 @@
 import React from "react";
+import ReactDOM from "react-dom";
 import PropTypes from 'prop-types';
 
-function Popup({ isOpen, onClose, children, popupClass="", contentClass="" }) {
+const modalRoot = document.getElementById("modals");
+
+function Popup({ onClose, children, popupClass="", contentClass="" }) {
   React.useEffect(() => {
-    if (!isOpen) return;
     const handleEscapeClose = (event) => {
       if (event.key === "Escape") {
         onClose();
@@ -13,17 +15,17 @@ function Popup({ isOpen, onClose, children, popupClass="", contentClass="" }) {
     return () => {
       document.removeEventListener("keydown", handleEscapeClose);
     };
-  }, [isOpen, onClose]);
+  }, [onClose]);
 
   const handleOverlayClose = (event) => {
-    if (event.target === event.currentTarget && isOpen) {
+    if (event.target === event.currentTarget) {
       onClose();
     }
   };
 
-  return (
+  return ReactDOM.createPortal(
     <div
-      className={`popup ${isOpen && "popup_is-opened"} ${popupClass}`}
+      className={`popup popup_is-opened ${popupClass}`}
       onMouseDown={handleOverlayClose}
     >
       <div className={`popup__content ${contentClass}`}>
@@ -34,12 +36,12 @@ function Popup({ isOpen, onClose, children, popupClass="", contentClass="" }) {
         ></button>
         {children}
       </div>
-    </div>
+    </div>,
+    modalRoot
   );
 }
 
 Popup.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   children: PropTypes.node.isRequired,
   popupClass: PropTypes.string,

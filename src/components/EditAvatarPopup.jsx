@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import PropTypes from 'prop-types';
+import React, { useEffect, useRef } from "react";
+import PropTypes from "prop-types";
 import { useSelector, useDispatch } from "react-redux";
 import PopupWithForm from "./PopupWithForm";
 
@@ -11,19 +11,15 @@ import {
 import { sendAvatar } from "../store/current-user/actions";
 
 import useFormWithValidation from "../hooks/useFormWithValidation";
+import Input from "./ui/Input";
 
-function EditAvatarPopup({ isOpen, onClose }) {
+function EditAvatarPopup({ onClose }) {
   const dispatch = useDispatch();
   const currentUser = useSelector(getCurrentUser);
   const isSending = useSelector(getIsAvatarSending);
   const sendingError = useSelector(getIsAvatarSendError);
-  const {
-    values,
-    handleChange,
-    resetFrom,
-    errors,
-    isValid,
-  } = useFormWithValidation();
+  const { values, handleChange, resetFrom, errors, isValid } =
+    useFormWithValidation();
 
   useEffect(() => {
     if (currentUser) {
@@ -31,6 +27,13 @@ function EditAvatarPopup({ isOpen, onClose }) {
     }
   }, [currentUser, resetFrom]);
 
+  const inputRef = useRef(null);
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
+  
   function handleSubmit(evt) {
     evt.preventDefault();
     dispatch(sendAvatar(values)).then(() => onClose());
@@ -38,39 +41,33 @@ function EditAvatarPopup({ isOpen, onClose }) {
 
   return (
     <PopupWithForm
-      isOpen={isOpen}
       onSubmit={handleSubmit}
       onClose={onClose}
-      title='Обновить аватар'
-      name='edit-avatar'
+      title="Обновить аватар"
+      name="edit-avatar"
       buttonText={isSending ? "Сохранение..." : "Сохранить"}
       isDisabled={!isValid}
     >
-      <label className='popup__label'>
-        <input
-          type='url'
-          name='avatar'
-          id='owner-avatar'
-          className='popup__input popup__input_type_description'
-          placeholder='Ссылка на изображение'
-          value={values.avatar || ""}
-          onChange={handleChange}
-          required
-        />
-        <span className='popup__error' id='owner-avatar-error'>
-          {errors.avatar || ""}
-        </span>
-      </label>
+      <Input
+        ref={inputRef}
+        type="url"
+        name="avatar"
+        id="owner-avatar"
+        placeholder="Ссылка на изображение"
+        value={values.avatar}
+        error={errors.avatar}
+        onChange={handleChange}
+        required
+      />
       {!!sendingError && (
-        <span className='popup__send-error'>{`Ошибка: ${sendingError}`}</span>
+        <span className="popup__send-error">{`Ошибка: ${sendingError}`}</span>
       )}
     </PopupWithForm>
   );
 }
 
 EditAvatarPopup.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired
+  onClose: PropTypes.func.isRequired,
 };
 
 export default EditAvatarPopup;

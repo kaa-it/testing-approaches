@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from "react";
 import { useSelector, useDispatch } from "react-redux";
+import {Route, Routes, Link, useResolvedPath, useNavigate} from "react-router-dom";
 
 import { getCurrentUser } from "../store/current-user/selectors";
 import {
@@ -14,24 +15,20 @@ import {loadData as loadUserInfo} from "../store/current-user/actions";
 import Card from "./Card";
 import Preloader from "./Preloader";
 import PopupWithForm from './PopupWithForm';
-import ImagePopup from './ImagePopup';
 import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 
 function Main() {
-  const [isProfilePopupOpen, setIsProfilePopupOpen] = useState(false);
-  const [isPlacePopupOpen, setIsPlacePopupOpen] = useState(false);
-  const [isAvatarPopupOpen, setIsAvatarPopupOpen] = useState(false);
-  const [selectedCard, setSelectedCard] = useState(null);
+  const navigate = useNavigate();
+  const url = useResolvedPath("").pathname;
   const [cardForDelete, setCardForDelete] = useState(null);
+  const currentUser = useSelector(getCurrentUser);
+  const cards = useSelector(getCards);
+  const isCardsLoading = useSelector(getIsCardsLodaing);
+  const isCardsError = useSelector(getCardsLoadError);
 
   const dispatch = useDispatch();
-  const handleEditProfileClick = () => setIsProfilePopupOpen(true);
-  const handleAddPlaceClick = () => setIsPlacePopupOpen(true);
-  const handleEditAvatarClick = () => setIsAvatarPopupOpen(true);
-  const handleCardClick = (card) => setSelectedCard(card);
-
   const handleCardDeleteRequest = (card) => setCardForDelete(card);
 
   useEffect(() => {
@@ -46,42 +43,33 @@ function Main() {
       .finally(() => setCardForDelete(null));
   }
 
-  function closeAllPopups() {
-    setIsProfilePopupOpen(false);
-    setIsPlacePopupOpen(false);
-    setIsAvatarPopupOpen(false);
-    setSelectedCard(null);
-    setCardForDelete(null);
+  function closePopup() {
+    navigate('/gallery');
   }
-
-  const currentUser = useSelector(getCurrentUser);
-  const cards = useSelector(getCards);
-  const isCardsLoading = useSelector(getIsCardsLodaing);
-  const isCardsError = useSelector(getCardsLoadError);
 
   return (
     <>
       <main className='content'>
         <section className='profile page__section'>
-          <div
+          <Link
             className='profile__image'
-            onClick={handleEditAvatarClick}
+            to={`${url}/edit-profile-avatar`}
             style={{ backgroundImage: `url(${currentUser.avatar})`}}
-          ></div>
+          ></Link>
           <div className='profile__info'>
             <h1 className='profile__title'>{currentUser.name}</h1>
-            <button
+            <Link
               className='profile__edit-button'
               type='button'
-              onClick={handleEditProfileClick}
-            ></button>
+              to={`${url}/edit-profile`}
+              ></Link>
             <p className='profile__description'>{currentUser.about}</p>
           </div>
-          <button
+          <Link
             className='profile__add-button'
             type='button'
-            onClick={handleAddPlaceClick}
-          ></button>
+            to={`${url}/add-card`}
+          ></Link>
         </section>
         <section className='places page__section'>
           {isCardsLoading && <Preloader />}
@@ -94,7 +82,6 @@ function Main() {
                 <Card
                   key={data._id}
                   card={data}
-                  onImageClick={handleCardClick}
                   onDelete={handleCardDeleteRequest}
                 />
               ))}
@@ -102,27 +89,24 @@ function Main() {
           )}
         </section>
       </main>
-      <EditProfilePopup
-        isOpen={isProfilePopupOpen}
-        onClose={closeAllPopups}
-      />
-      <AddPlacePopup
-        isOpen={isPlacePopupOpen}
-        onClose={closeAllPopups}
-      />
-      <EditAvatarPopup
-        isOpen={isAvatarPopupOpen}
-        onClose={closeAllPopups}
-      />
-      <PopupWithForm
-        isOpen={!!cardForDelete}
+      <Routes>
+        <Route path={`/edit-profile`} element={
+          <EditProfilePopup onClose={closePopup}/>
+        } />
+        <Route path={`/add-card`} element={
+          <AddPlacePopup onClose={closePopup}/>
+        } />
+        <Route path={`/edit-profile-avatar`} element={
+          <EditAvatarPopup onClose={closePopup}/>
+        } />
+      </Routes>
+      {cardForDelete && <PopupWithForm
         title='Вы уверены?'
         name='remove-card'
         buttonText='Да'
-        onClose={closeAllPopups}
+        onClose={() => setCardForDelete(null)}
         onSubmit={handleCardDelete}
-      />
-      <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+      />}
     </>
   );
 }
